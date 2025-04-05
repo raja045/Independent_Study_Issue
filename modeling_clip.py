@@ -919,6 +919,7 @@ class CLIPTextTransformer(nn.Module):
         position_ids: Optional[torch.Tensor] = None,
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
+        input_embed = None,
         return_dict: Optional[bool] = None,
     ) -> Union[Tuple, BaseModelOutputWithPooling]:
         r"""
@@ -938,6 +939,9 @@ class CLIPTextTransformer(nn.Module):
         input_ids = input_ids.view(-1, input_shape[-1])
 
         hidden_states = self.embeddings(input_ids=input_ids, position_ids=position_ids)
+        if input_embed != None:
+            hidden_states=input_embed
+        bsz,seq_len = input_shape
 
         # CLIP's text model uses causal mask, prepare it here.
         # https://github.com/openai/CLIP/blob/cfcffb90e69f37bf2ff1e988237a0fbe41f33c04/clip/model.py#L324
@@ -1025,6 +1029,7 @@ class CLIPTextModel(CLIPPreTrainedModel):
         position_ids: Optional[torch.Tensor] = None,
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
+        input_embed = None,
         return_dict: Optional[bool] = None,
     ) -> Union[Tuple, BaseModelOutputWithPooling]:
         r"""
@@ -1050,6 +1055,7 @@ class CLIPTextModel(CLIPPreTrainedModel):
             input_ids=input_ids,
             attention_mask=attention_mask,
             position_ids=position_ids,
+            input_embed = input_embed,
             output_attentions=output_attentions,
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
